@@ -5,7 +5,7 @@
         /* BUSCA DADOS DA OCORRENCIA */
 
         $py = md5('idocorrencia');
-        $sql = $pdo->prepare("SELECT idocorrencia,cliente,serial,datado,hora,solicitacao,diagnostico,procedimento,observacao,tecnico,retorno,fechada,desativada,entrega FROM ocorrencia WHERE idocorrencia = :idocorrencia");
+        $sql = $pdo->prepare("SELECT idocorrencia,cliente,serial,datado,hora,solicitacao,diagnostico,procedimento,observacao,tecnico,retorno,pagamento,fechada,desativada,entrega FROM ocorrencia WHERE idocorrencia = :idocorrencia");
         $sql->bindParam(':idocorrencia', $_GET[''.$py.''], PDO::PARAM_INT);
         $sql->execute();
         $ret = $sql->rowCount();
@@ -168,6 +168,50 @@
                             echo'
                             <span class="form-icheck"><input type="radio" name="retorno-" id="onretorno-" value="T"> Sim</span>
                             <span class="form-icheck"><input type="radio" name="retorno-" id="offretorno-" value="F" checked> N&atilde;o</span>';
+                        }
+                    ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="retorno"><i class="fa fa-asterisk"></i> Pagamento</label>
+                    <div class="input-group">
+                    <?php
+                        switch ($lin->pagamento) {
+                            case 'boleto':
+                                echo'
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="boleto" checked> Boleto</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="cartao"> Cart&atilde;o</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="contrato"> Contrato</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="dinheiro"> Dinheiro</span>';
+                            break;
+                            case 'cartao':
+                                echo'
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="boleto"> Boleto</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="cartao" checked> Cart&atilde;o</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="contrato"> Contrato</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="dinheiro"> Dinheiro</span>';
+                            break;
+                            case 'contrato':
+                                echo'
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="boleto"> Boleto</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="cartao"> Cart&atilde;o</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="contrato" checked> Contrato</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="dinheiro"> Dinheiro</span>';
+                            break;
+                            case 'dinheiro':
+                                echo'
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="boleto"> Boleto</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="cartao"> Cart&atilde;o</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="contrato"> Contrato</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="dinheiro" checked> Dinheiro</span>';
+                            break;
+                            default:
+                                echo'
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="boleto"> Boleto</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="cartao"> Cart&atilde;o</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="contrato"> Contrato</span>
+                                <span class="form-icheck"><input type="radio" name="pagamento-" id="" value="dinheiro" checked> Dinheiro</span>';
+                            break;
                         }
                     ?>
                     </div>

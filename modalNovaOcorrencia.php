@@ -103,6 +103,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="retorno"><i class="fa fa-asterisk"></i> Pagamento</label>
+                                <div class="input-group">
+                                    <span class="form-icheck"><input type="radio" name="pagamento" id="" value="boleto"> Boleto</span>
+                                    <span class="form-icheck"><input type="radio" name="pagamento" id="" value="cartao"> Cart&atilde;o</span>
+                                    <span class="form-icheck"><input type="radio" name="pagamento" id="" value="contrato"> Contrato</span>
+                                    <span class="form-icheck"><input type="radio" name="pagamento" id="" value="dinheiro" checked> Dinheiro</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="viacliente"> Via</label>
                                 <div class="input-group">
                                     <span class="form-icheck"><input type="checkbox" name="viacliente" id="viacliente" value="T"> Imprimir uma via para o cliente</span>

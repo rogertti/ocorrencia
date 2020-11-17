@@ -70,7 +70,7 @@
         $client = 'Fundo Municipal de Saúde de Camboriú';
         $fechada = 'F';
         $desativada = 'F';
-        $sql = $pdo->prepare("SELECT idocorrencia,cliente,serial,datado,hora,solicitacao,diagnostico,procedimento,observacao,tecnico,retorno,fechada,desativada,entrega FROM ocorrencia WHERE cliente <> :cliente AND fechada = :fechada AND desativada = :desativada ORDER BY tecnico,hora,idocorrencia DESC");
+        $sql = $pdo->prepare("SELECT idocorrencia,cliente,serial,datado,hora,solicitacao,diagnostico,procedimento,observacao,tecnico,retorno,pagamento,fechada,desativada,entrega FROM ocorrencia WHERE cliente <> :cliente AND fechada = :fechada AND desativada = :desativada ORDER BY tecnico,hora,idocorrencia DESC");
         $sql->bindParam(':cliente', $client, PDO::PARAM_STR);
         $sql->bindParam(':fechada', $fechada, PDO::PARAM_STR);
         $sql->bindParam(':desativada', $desativada, PDO::PARAM_STR);
@@ -181,11 +181,21 @@
                                         if ($lin->entrega == 'T') {
                                             $imgstatus = '
                                             <span><a title="Imprimir a ocorr&ecirc;ncia" href="printOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-print"></i></a></span>
-                                            <span><a title="O equipamento saiu para entrega" href="#"><i class="fa fa-truck"></i></a></span>';
+                                            <!--<span><a title="O equipamento saiu para entrega" href="#"><i class="fa fa-truck"></i></a></span>-->';
                                         }
                                         else {
                                             $imgstatus = '';
                                         }
+                                    }
+
+                                    // VERIFICA O PAGAMENTO
+
+                                    switch ($lin->pagamento) {
+                                        case 'boleto': $lin->pagamento = 'Boleto'; break;
+                                        case 'cartao': $lin->pagamento = 'Cart&atilde;o'; break;
+                                        case 'contrato': $lin->pagamento = 'Contrato'; break;
+                                        case 'dinheiro': $lin->pagamento = 'Dinheiro'; break;
+                                        default: $lin->pagamento = 'Indefinido'; break;
                                     }
 
                                     switch($orgdata) {
@@ -198,6 +208,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -220,6 +231,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -242,6 +254,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -264,6 +277,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -286,6 +300,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -308,6 +323,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -330,6 +346,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -352,6 +369,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -374,6 +392,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -396,6 +415,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -418,6 +438,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -440,6 +461,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -462,6 +484,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -484,6 +507,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -506,6 +530,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -528,6 +553,7 @@
                                                     <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                                     <span>'.$imgitem.'</span>
                                                     <span>'.$imgstatus.'</span>
+                                                    <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                                 </td>
                                                 <td class="td-action-time">'.$lin->datado.' - '.$lin->hora.' h - '.$lin->tecnico.'</td>
                                                 <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -555,7 +581,7 @@
                                         if ($lin->entrega == 'T') {
                                             $imgstatus = '
                                             <span><a title="Imprimir a ocorr&ecirc;ncia" href="printOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-print"></i></a></span>
-                                            <span><a title="O equipamento saiu para entrega" href="#"><i class="fa fa-truck"></i></a></span>';
+                                            <!--<span><a title="O equipamento saiu para entrega" href="#"><i class="fa fa-truck"></i></a></span>-->';
                                         }
                                         else {
                                             $imgstatus = '';
@@ -570,6 +596,7 @@
                                             <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                             <span>'.$imgitem.'</span>
                                             <span>'.$imgstatus.'</span>
+                                            <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                         </td>
                                         <td class="td-action-time">'.$lin->datado.' - '.$lin->hora.' h - '.$lin->tecnico.'</td>
                                         <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>
@@ -596,7 +623,7 @@
                                     if ($lin->entrega == 'T') {
                                         $imgstatus = '
                                         <span><a title="Imprimir a ocorr&ecirc;ncia" href="printOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-print"></i></a></span>
-                                        <span><a title="O equipamento saiu para entrega" href="#"><i class="fa fa-truck"></i></a></span>';
+                                        <!--<span><a title="O equipamento saiu para entrega" href="#"><i class="fa fa-truck"></i></a></span>-->';
                                     }
                                     else {
                                         $imgstatus = '';
@@ -611,6 +638,7 @@
                                         <span><a data-toggle="modal" data-target="#edita-ocorrencia" title="Editar a ocorr&ecirc;ncia" href="editaOcorrencia.php?'.$pyidocorrencia.'='.$lin->idocorrencia.'"><i class="fa fa-pencil"></i></a></span>
                                         <span>'.$imgitem.'</span>
                                         <span>'.$imgstatus.'</span>
+                                        <span><a title="'.$lin->pagamento.'" data-toggle="tooltip" data-placement="top" data-html="true" style="color: green;cursor: pointer;"><i class="fa fa-money"></i></a></span>
                                     </td>
                                     <td class="td-action-time">'.$lin->datado.' - '.$lin->hora.' h - '.$lin->tecnico.'</td>
                                     <td><strong><a href="#" title="'.$cliente.'" data-toggle="tooltip" data-placement="top" data-html="true">'.$lin->cliente.'</a></strong>: '.$lin->solicitacao.' <span class="pull-right span-serial"><strong>'.$lin->serial.'</strong></span></td>

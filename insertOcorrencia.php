@@ -88,7 +88,7 @@
                 /* TENTA INSERIR NO BANCO */
 
                 $desativada = 'F';
-                $sql = $pdo->prepare("INSERT INTO ocorrencia (serial,cliente,datado,hora,solicitacao,diagnostico,procedimento,observacao,tecnico,retorno,fechada,desativada,entrega,stamp) VALUES (:serial,:cliente,:datado,:hora,:solicitacao,:diagnostico,:procedimento,:observacao,:tecnico,:retorno,:fechada,:desativada,:entrega,:stamp)");
+                $sql = $pdo->prepare("INSERT INTO ocorrencia (serial,cliente,datado,hora,solicitacao,diagnostico,procedimento,observacao,tecnico,retorno,pagamento,fechada,desativada,entrega) VALUES (:serial,:cliente,:datado,:hora,:solicitacao,:diagnostico,:procedimento,:observacao,:tecnico,:retorno,:pagamento,:fechada,:desativada,:entrega)");
                 $sql->bindParam(':serial', $_POST['serial'], PDO::PARAM_STR);
                 $sql->bindParam(':cliente', $_POST['cliente'], PDO::PARAM_STR);
                 $sql->bindParam(':datado', $_POST['datado'], PDO::PARAM_STR);
@@ -99,10 +99,11 @@
                 $sql->bindParam(':observacao', $_POST['observacao'], PDO::PARAM_STR);
                 $sql->bindParam(':tecnico', $_POST['tecnico'], PDO::PARAM_STR);
                 $sql->bindParam(':retorno', $_POST['retorno'], PDO::PARAM_STR);
+                $sql->bindParam(':pagamento', $_POST['pagamento'], PDO::PARAM_STR);
                 $sql->bindParam(':fechada', $_POST['fechada'], PDO::PARAM_STR);
                 $sql->bindParam(':desativada', $desativada, PDO::PARAM_STR);
                 $sql->bindParam(':entrega', $_POST['entrega'], PDO::PARAM_STR);
-                $sql->bindParam(':stamp', $_POST['stamp'], PDO::PARAM_STR);
+                #$sql->bindParam(':stamp', $_POST['stamp'], PDO::PARAM_STR);
                 $res = $sql->execute();
 
                     if(!$res) {
